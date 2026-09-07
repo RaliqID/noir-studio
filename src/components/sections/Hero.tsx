@@ -1,4 +1,4 @@
-import { Reveal } from "../ui/Reveal";
+import { TextReveal } from "../ui/TextReveal";
 import { SECTION_IDS } from "../../lib/constants";
 
 const DISCIPLINES = ["Design", "Development", "3D WebGL", "Motion"] as const;
@@ -23,16 +23,22 @@ export function Hero() {
         </div>
       </div>
 
-      <Reveal className="pointer-events-auto my-auto max-w-2xl py-12">
-        <h1 className="font-display font-extrabold leading-[0.92] tracking-tightest text-noir-light text-[clamp(24px,6.7vw,96px)]">
-          WE CREATE
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-noir-light via-neutral-300 to-neutral-500">
-            DIGITAL EXPERIENCES
-          </span>
-          <br />
-          THAT MOVE.
-        </h1>
+      <div className="pointer-events-auto my-auto max-w-none py-12">
+        <TextReveal
+          as="h1"
+          immediate
+          delay={0.15}
+          className="font-display font-extrabold leading-[0.92] tracking-tightest text-noir-light text-[clamp(24px,6.7vw,96px)]"
+          lines={[
+            { text: "WE CREATE" },
+            {
+              text: "DIGITAL EXPERIENCES",
+              className:
+                "text-transparent bg-clip-text bg-gradient-to-r from-noir-light via-neutral-300 to-neutral-500",
+            },
+            { text: "THAT MOVE." },
+          ]}
+        />
         <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-noir-border/60 pt-6 font-mono text-xs uppercase tracking-widest2 text-noir-muted">
           {DISCIPLINES.map((d, i) => (
             <span key={d} className="flex items-center gap-4">
@@ -41,7 +47,7 @@ export function Hero() {
             </span>
           ))}
         </div>
-      </Reveal>
+      </div>
 
       <div className="flex w-full items-end justify-between border-t border-noir-border/30 pt-6">
         <div className="flex items-center gap-3">

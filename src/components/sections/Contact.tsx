@@ -1,4 +1,6 @@
 import { Reveal } from "../ui/Reveal";
+import { TextReveal } from "../ui/TextReveal";
+import { Magnetic } from "../ui/Magnetic";
 import { SOCIALS } from "../../data/content";
 import { SECTION_IDS } from "../../lib/constants";
 
@@ -17,27 +19,33 @@ export function Contact() {
         </span>
       </div>
 
-      <Reveal className="section-shell my-auto w-full py-16">
+      <Reveal className="section-shell my-auto w-full py-16" y={0}>
         <div className="mx-auto max-w-5xl">
-          <h2 className="font-display text-[clamp(1.55rem,7.6vw,2.25rem)] font-extrabold leading-[0.95] tracking-tightest text-noir-light sm:text-6xl md:text-7xl lg:text-8xl">
-            HAVE A PROJECT
-            <br />
-            IN MIND?
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-noir-light via-neutral-400 to-neutral-600">
-              LET'S BUILD
-            </span>
-            <br />
-            SOMETHING IMPOSSIBLE.
-          </h2>
+          <TextReveal
+            as="h2"
+            delay={0.05}
+            className="font-display font-extrabold leading-[0.95] tracking-tightest text-noir-light text-[clamp(1.55rem,7.6vw,2.25rem)] sm:text-6xl md:text-7xl lg:text-8xl"
+            lines={[
+              { text: "HAVE A PROJECT" },
+              { text: "IN MIND?" },
+              {
+                text: "LET'S BUILD",
+                className:
+                  "text-transparent bg-clip-text bg-gradient-to-r from-noir-light via-neutral-400 to-neutral-600",
+              },
+              { text: "SOMETHING IMPOSSIBLE." },
+            ]}
+          />
           <div className="mt-12 flex flex-col items-start gap-8 sm:flex-row sm:items-center">
-            <a
-              href="mailto:hello@noir.studio"
-              className="group flex items-center gap-3 rounded bg-noir-light px-8 py-4 font-mono text-xs font-semibold uppercase tracking-widest2 text-noir-bg transition-all duration-300 hover:bg-noir-accent"
-            >
-              <span>Start a project</span>
-              <span className="transform transition-transform group-hover:translate-x-1" aria-hidden="true">↗</span>
-            </a>
+            <Magnetic>
+              <a
+                href="mailto:hello@noir.studio"
+                className="group flex items-center gap-3 rounded bg-noir-light px-8 py-4 font-mono text-xs font-semibold uppercase tracking-widest2 text-noir-bg transition-all duration-300 hover:bg-noir-accent"
+              >
+                <span>Start a project</span>
+                <span className="transform transition-transform group-hover:translate-x-1" aria-hidden="true">↗</span>
+              </a>
+            </Magnetic>
             <a
               href="mailto:hello@noir.studio"
               className="font-mono text-sm tracking-wider text-noir-muted transition-colors hover:text-noir-light"

@@ -1,7 +1,9 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { StageCanvas } from "./three/StageCanvas";
 import { StaticBackdrop } from "./components/ui/StaticBackdrop";
 import { Grain } from "./components/ui/Grain";
+import { ScrollProgressRail } from "./components/ui/ScrollProgressRail";
+import { CustomCursor } from "./components/ui/CustomCursor";
 import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
 import { Hero } from "./components/sections/Hero";
@@ -11,6 +13,7 @@ import { Services } from "./components/sections/Services";
 import { About } from "./components/sections/About";
 import { Contact } from "./components/sections/Contact";
 import { isWebGLAvailable } from "./lib/webgl";
+import { initSmoothScroll, destroySmoothScroll } from "./lib/smoothScroll";
 import { useScrollProgress } from "./hooks/useScrollProgress";
 import { usePointerNormalized } from "./hooks/usePointerNormalized";
 import {
@@ -24,6 +27,12 @@ export default function App() {
   const mobile = useIsMobileViewport();
   const scroll = useScrollProgress();
   const pointer = usePointerNormalized();
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    initSmoothScroll();
+    return () => destroySmoothScroll();
+  }, [reducedMotion]);
 
   return (
     <>
@@ -42,6 +51,8 @@ export default function App() {
       )}
 
       <Grain />
+      <CustomCursor />
+      <ScrollProgressRail />
       <Navbar />
 
       {/* Information layer: DOM */}
