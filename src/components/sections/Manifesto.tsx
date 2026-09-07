@@ -1,5 +1,6 @@
 import { Reveal } from "../ui/Reveal";
 import { SectionHeader } from "../ui/SectionHeader";
+import { TextReveal } from "../ui/TextReveal";
 import { MANIFESTO_PRINCIPLES } from "../../data/content";
 import { SECTION_IDS } from "../../lib/constants";
 
@@ -21,19 +22,19 @@ export function Manifesto() {
           }
         />
 
-        <Reveal>
+        <Reveal y={0}>
           <p className="font-mono text-sm uppercase tracking-widest2 text-noir-muted">Axiom 01</p>
-          <blockquote className="mt-6 font-display font-extrabold leading-[0.96] tracking-tightest text-noir-light text-[clamp(22px,6.3vw,84px)]">
-            WE DON'T DESIGN
-            <br />
-            <span className="text-neutral-500 transition-colors duration-500 hover:text-noir-light">
-              FOR SCREENS.
-            </span>
-            <br />
-            WE DESIGN
-            <br />
-            FOR EXPERIENCES.
-          </blockquote>
+          <TextReveal
+            as="blockquote"
+            delay={0.1}
+            className="mt-6 font-display font-extrabold leading-[0.96] tracking-tightest text-noir-light text-[clamp(22px,6.3vw,84px)]"
+            lines={[
+              { text: "WE DON'T DESIGN" },
+              { text: "FOR SCREENS.", className: "text-neutral-500 transition-colors duration-500 hover:text-noir-light" },
+              { text: "WE DESIGN" },
+              { text: "FOR EXPERIENCES." },
+            ]}
+          />
         </Reveal>
 
         <div className="mt-20 grid grid-cols-1 gap-12 border-t border-noir-border/40 pt-10 md:grid-cols-3">
