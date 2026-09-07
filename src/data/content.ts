@@ -6,6 +6,8 @@ export interface Project {
   subtitle: string;
   year: string;
   recognition: string;
+  /** Live case URL (opens in a new tab). Absent → falls back to contact. */
+  href?: string;
 }
 
 export interface Service {
@@ -33,6 +35,7 @@ export const PROJECTS: Project[] = [
     subtitle: "Fitness intelligence platform",
     year: "2026",
     recognition: "Red Dot Best of the Best",
+    href: "http://localhost:3000",
   },
   {
     id: "archive",

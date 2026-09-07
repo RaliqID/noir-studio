@@ -54,13 +54,25 @@ export function Work() {
                       <span className="block font-mono text-xs uppercase text-noir-muted">Recognition</span>
                       <span className="font-mono text-sm text-noir-light">{p.recognition}</span>
                     </div>
-                    <a
-                      href={`#${SECTION_IDS.contact}`}
-                      aria-label={`Enquire about ${p.title}`}
-                      className="flex h-12 w-12 items-center justify-center rounded-full border border-noir-border transition-all duration-300 group-hover:border-noir-accent group-hover:bg-noir-accent group-hover:text-noir-bg"
-                    >
-                      <ArrowIcon />
-                    </a>
+                    {p.href ? (
+                      <a
+                        href={p.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label={`Open ${p.title} live site (new tab)`}
+                        className="flex h-12 w-12 items-center justify-center rounded-full border border-noir-border transition-all duration-300 group-hover:border-noir-accent group-hover:bg-noir-accent group-hover:text-noir-bg"
+                      >
+                        <ArrowIcon />
+                      </a>
+                    ) : (
+                      <a
+                        href={`#${SECTION_IDS.contact}`}
+                        aria-label={`Enquire about ${p.title}`}
+                        className="flex h-12 w-12 items-center justify-center rounded-full border border-noir-border transition-all duration-300 group-hover:border-noir-accent group-hover:bg-noir-accent group-hover:text-noir-bg"
+                      >
+                        <ArrowIcon />
+                      </a>
+                    )}
                   </div>
                 </div>
               </article>
