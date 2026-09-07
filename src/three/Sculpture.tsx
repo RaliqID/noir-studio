@@ -1,12 +1,21 @@
 import { useMemo, useRef } from "react";
-import { useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import * as THREE from "three";
 import { MOTION } from "../lib/constants";
 import { computeStage, damp, PRESENCE } from "../lib/choreography";
 import type { PointerRef, ScrollRef } from "../types/refs";
 
 const MODEL_URL = "/models/noir-sculpture.glb";
+
+/** Draco decoder is self-hosted in /public/draco (no CDN dependency). */
+function configure(loader: GLTFLoader) {
+  const draco = new DRACOLoader();
+  draco.setDecoderPath("/draco/");
+  loader.setDRACOLoader(draco);
+}
+useLoader.preload(GLTFLoader, MODEL_URL, configure);
 
 /**
  * Hero sculpture: real GLB asset authored in Blender
@@ -22,13 +31,10 @@ export function Sculpture({
   pointer: PointerRef;
   reducedMotion: boolean;
 }) {
-  const { scene } = useGLTF(MODEL_URL);
+  const { scene } = useLoader(GLTFLoader, MODEL_URL, configure);
 
   const parts = useMemo(() => {
     const get = (n: string) => scene.getObjectByName(n);
-    // Solid node spheres are replaced by the cheaper Points cloud layer.
-    const nodes = get("NOIR_Nodes");
-    if (nodes) nodes.visible = false;
     return {
       sculpture: get("NOIR_Sculpture"),
       exo: get("NOIR_Exoskeleton"),
@@ -76,5 +82,3 @@ export function Sculpture({
     </group>
   );
 }
-
-useGLTF.preload(MODEL_URL);

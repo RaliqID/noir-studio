@@ -1,5 +1,4 @@
-import { useEffect, useMemo } from "react";
-import { StageCanvas } from "./three/StageCanvas";
+import { Suspense, lazy, useEffect, useMemo } from "react";
 import { StaticBackdrop } from "./components/ui/StaticBackdrop";
 import { Grain } from "./components/ui/Grain";
 import { ScrollProgressRail } from "./components/ui/ScrollProgressRail";
@@ -20,6 +19,12 @@ import {
   usePrefersReducedMotion,
   useIsMobileViewport,
 } from "./hooks/useMediaQuery";
+
+// The whole 3D stage (canvas + loaders) is deferred until idle time so the
+// DOM shell paints first. WebGL check stays synchronous for the fallback.
+const StageCanvas = lazy(() =>
+  import("./three/StageCanvas").then((m) => ({ default: m.StageCanvas }))
+);
 
 export default function App() {
   const webgl = useMemo(() => isWebGLAvailable(), []);
@@ -45,7 +50,9 @@ export default function App() {
 
       {/* Experience layer: real WebGL scene, static fallback when unavailable */}
       {webgl ? (
-        <StageCanvas scroll={scroll} pointer={pointer} reducedMotion={reducedMotion} mobile={mobile} />
+        <Suspense fallback={<StaticBackdrop />}>
+          <StageCanvas scroll={scroll} pointer={pointer} reducedMotion={reducedMotion} mobile={mobile} />
+        </Suspense>
       ) : (
         <StaticBackdrop />
       )}
