@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --noir-bg: #08080a;
+    --noir-surface: #0f0f13;
+    --noir-card: #141419;
+    --noir-border: #23232b;
+    --noir-muted: #7e7e8d;
+    --noir-light: #eaebee;
+    --noir-accent: #34d399;
+  }
+
+  html {
+    background-color: var(--noir-bg);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-noir-bg font-sans text-noir-light antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--noir-accent);
+    color: var(--noir-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--noir-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .film-grain {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  .vignette {
+    background: radial-gradient(circle at center, transparent 0%, rgba(8, 8, 10, 0.6) 100%);
+  }
+
+  .section-shell {
+    @apply relative mx-auto w-full max-w-6xl;
+  }
+
+  .meta-label {
+    @apply font-mono text-[11px] uppercase tracking-widest text-noir-muted;
+  }
+
+  .hairline {
+    @apply border-noir-border/40;
+  }
+}
