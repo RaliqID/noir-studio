@@ -1,0 +1,60 @@
+import { useMemo } from "react";
+import { StageCanvas } from "./three/StageCanvas";
+import { StaticBackdrop } from "./components/ui/StaticBackdrop";
+import { Grain } from "./components/ui/Grain";
+import { Navbar } from "./components/layout/Navbar";
+import { Footer } from "./components/layout/Footer";
+import { Hero } from "./components/sections/Hero";
+import { Manifesto } from "./components/sections/Manifesto";
+import { Work } from "./components/sections/Work";
+import { Services } from "./components/sections/Services";
+import { About } from "./components/sections/About";
+import { Contact } from "./components/sections/Contact";
+import { isWebGLAvailable } from "./lib/webgl";
+import { useScrollProgress } from "./hooks/useScrollProgress";
+import { usePointerNormalized } from "./hooks/usePointerNormalized";
+import {
+  usePrefersReducedMotion,
+  useIsMobileViewport,
+} from "./hooks/useMediaQuery";
+
+export default function App() {
+  const webgl = useMemo(() => isWebGLAvailable(), []);
+  const reducedMotion = usePrefersReducedMotion();
+  const mobile = useIsMobileViewport();
+  const scroll = useScrollProgress();
+  const pointer = usePointerNormalized();
+
+  return (
+    <>
+      <a
+        href="#hero"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-noir-accent focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:text-noir-bg"
+      >
+        Skip to content
+      </a>
+
+      {/* Experience layer: real WebGL scene, static fallback when unavailable */}
+      {webgl ? (
+        <StageCanvas scroll={scroll} pointer={pointer} reducedMotion={reducedMotion} mobile={mobile} />
+      ) : (
+        <StaticBackdrop />
+      )}
+
+      <Grain />
+      <Navbar />
+
+      {/* Information layer: DOM */}
+      <main className="relative z-20 w-full">
+        <Hero />
+        <Manifesto />
+        <Work />
+        <Services />
+        <About />
+        <Contact />
+      </main>
+
+      <Footer />
+    </>
+  );
+}

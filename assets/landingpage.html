@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NOIR — Digital Creative Studio</title>
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts: Syne & Plus Jakarta Sans & Space Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Syne:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"Space Grotesk"', 'monospace'],
+          },
+          colors: {
+            noir: {
+              bg: '#08080a',
+              surface: '#0f0f13',
+              card: '#141419',
+              border: '#23232b',
+              muted: '#7e7e8d',
+              light: '#eaebee',
+              accent: '#34d399', // Restrained emerald/jade accent
+              accentDim: '#064e3b',
+            }
+          },
+          letterSpacing: {
+            tightest: '-0.04em',
+            widest2: '0.25em',
+            widest3: '0.35em',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #08080a;
+      color: #eaebee;
+      overflow-x: hidden;
+      selection-background-color: #34d399;
+      selection-color: #08080a;
+    }
+    ::selection {
+      background: #34d399;
+      color: #08080a;
+    }
+    /* Subtle film grain overlay */
+    .film-grain {
+      background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+    .custom-cursor {
+      pointer-events: none;
+      transition: transform 0.12s ease-out, width 0.2s, height 0.2s, background-color 0.2s;
+    }
+    /* Smooth line animation */
+    .line-reveal {
+      transform-origin: left;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .project-row:hover .line-reveal {
+      transform: scaleX(1);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased relative min-h-screen">
+<!-- Subtle Ambient Grain & Vignette Overlay -->
+<div class="fixed inset-0 film-grain pointer-events-none z-10 opacity-70"></div>
+<div class="fixed inset-0 pointer-events-none z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(8,8,10,0.6)_100%)]"></div>
+<!-- PERSISTENT 3D SCENE (STAGE BACKGROUND) -->
+<!-- The single abstract 3D sculpture is rendered via Three.js and responds dynamically to cursor and scroll -->
+<div class="fixed inset-0 w-full h-full pointer-events-none z-0">
+<!-- STITCH_THREEJS_START:ANIMATION_4 class="absolute inset-0 w-full h-full bg-transparent" -->
+<div class="absolute inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_4" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_4');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // NOIR Studio Interactive 3D Sculpture System
+// Container is provided in scope by Stitch
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+camera.position.set(0, 0, 8);
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+renderer.setSize(width, height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+container.appendChild(renderer.domElement);
+
+// Master Group holding the iconic sculpture
+const masterGroup = new THREE.Group();
+scene.add(masterGroup);
+
+// Create an architectural, organic, mathematical sculpture:
+// Combining Parametric Torus Geometry + Inner Wireframe Cage + Monolithic Ring Core
+const mainGeo = new THREE.TorusKnotGeometry(1.8, 0.42, 220, 36, 2, 5);
+
+// Outer Architectural Matte Dark Stone / Brushed Carbon Mesh
+const mainMat = new THREE.MeshPhysicalMaterial({
+  color: 0x161618,
+  emissive: 0x050507,
+  roughness: 0.35,
+  metalness: 0.85,
+  clearcoat: 0.6,
+  clearcoatRoughness: 0.2,
+  reflectivity: 0.9,
+  wireframe: false,
+});
+const sculpture = new THREE.Mesh(mainGeo, mainMat);
+masterGroup.add(sculpture);
+
+// Subtle wireframe exoskeleton accentuating structural precision
+const wireGeo = new THREE.TorusKnotGeometry(1.81, 0.425, 120, 16, 2, 5);
+const wireMat = new THREE.MeshBasicMaterial({
+  color: 0x484852,
+  wireframe: true,
+  transparent: true,
+  opacity: 0.18
+});
+const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+masterGroup.add(wireMesh);
+
+// Center Gyroscopic Monolith Rings (Architectural Orbit)
+const ringGeo1 = new THREE.TorusGeometry(3.0, 0.015, 16, 100);
+const ringMat = new THREE.MeshBasicMaterial({ color: 0xa3a3b0, transparent: true, opacity: 0.35 });
+const ring1 = new THREE.Mesh(ringGeo1, ringMat);
+ring1.rotation.x = Math.PI / 3;
+masterGroup.add(ring1);
+
+const ringGeo2 = new THREE.TorusGeometry(3.4, 0.01, 16, 100);
+const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x6e6e7d, transparent: true, opacity: 0.2 });
+const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+ring2.rotation.y = Math.PI / 4;
+masterGroup.add(ring2);
+
+// Subtle Floating Precision Coordinate Dots (Constellation Nodes)
+const dotCount = 45;
+const dotGeo = new THREE.BufferGeometry();
+const positions = new Float32Array(dotCount * 3);
+for (let i = 0; i < dotCount * 3; i += 3) {
+  positions[i] = (Math.random() - 0.5) * 8;
+  positions[i+1] = (Math.random() - 0.5) * 8;
+  positions[i+2] = (Math.random() - 0.5) * 6;
+}
+dotGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const dotMat = new THREE.PointsMaterial({ color: 0xd4d4dc, size: 0.035, transparent: true, opacity: 0.4 });
+const pointCloud = new THREE.Points(dotGeo, dotMat);
+masterGroup.add(pointCloud);
+
+// Cinematic Studio Lighting
+const ambientLight = new THREE.AmbientLight(0x0e0e12, 1.8);
+scene.add(ambientLight);
+
+// Key Light: Dramatic cold white
+const keyLight = new THREE.DirectionalLight(0xf0f2f8, 3.2);
+keyLight.position.set(5, 8, 7);
+scene.add(keyLight);
+
+// Rim Light: Architectural Cyan / Pale Slate Edge
+const rimLight = new THREE.DirectionalLight(0x6ee7b7, 1.4); // subtle jade/emerald restrained accent
+rimLight.position.set(-6, -4, -5);
+scene.add(rimLight);
+
+// Bottom Fill Light
+const fillLight = new THREE.PointLight(0x38384a, 2.0, 20);
+fillLight.position.set(0, -5, 4);
+scene.add(fillLight);
+
+// Interactive Tracking & Scroll Progression
+let targetMouseX = 0;
+let targetMouseY = 0;
+let mouseX = 0;
+let mouseY = 0;
+let scrollProgress = 0;
+
+window.addEventListener('mousemove', (e) => {
+  targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+  targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+window.addEventListener('scroll', () => {
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  if (maxScroll > 0) {
+    scrollProgress = window.scrollY / maxScroll;
+  }
+});
+
+// Window Resize Handling
+const handleResize = () => {
+  const w = container.clientWidth || window.innerWidth;
+  const h = container.clientHeight || window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+};
+window.addEventListener('resize', handleResize);
+
+// Animation Loop with continuous multi-stage scroll choreography
+let clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsedTime = clock.getElapsedTime();
+
+  // Smooth lerp mouse tracking
+  mouseX += (targetMouseX - mouseX) * 0.05;
+  mouseY += (targetMouseY - mouseY) * 0.05;
+
+  // Base slow organic rotation
+  sculpture.rotation.x = elapsedTime * 0.18 + mouseY * 0.4;
+  sculpture.rotation.y = elapsedTime * 0.24 + mouseX * 0.5;
+  wireMesh.rotation.x = sculpture.rotation.x;
+  wireMesh.rotation.y = sculpture.rotation.y;
+
+  ring1.rotation.z = elapsedTime * 0.12;
+  ring2.rotation.x = elapsedTime * -0.09;
+
+  // Continuous Section Choreography based on scroll progress:
+  // 0.0 (Hero): Center-Right, poised, scale 1.05
+  // 0.2 (Manifesto): Approaches camera, scale 1.5, shifts slightly left
+  // 0.45 (Work): Deforms orientation, moves to side, reveals case studies
+  // 0.7 (Services): Expands rings, centers, reacts to mouse
+  // 0.88 (About): Recedes deeper, scale drops to 0.7
+  // 1.0 (Contact): Distant monolith totem, z = -4, scale 0.5
+  
+  const targetX = 1.2 * (1 - scrollProgress * 2.2) + mouseX * 0.6;
+  const targetY = -scrollProgress * 1.5 - mouseY * 0.5;
+  const targetZ = scrollProgress < 0.25 
+    ? (scrollProgress / 0.25) * 2.0 
+    : 2.0 - (scrollProgress - 0.25) * 7.5;
+    
+  const targetScale = scrollProgress < 0.2 
+    ? 1.05 + scrollProgress * 2.0 
+    : Math.max(0.45, 1.45 - (scrollProgress - 0.2) * 1.6);
+
+  masterGroup.position.x += (targetX - masterGroup.position.x) * 0.06;
+  masterGroup.position.y += (targetY - masterGroup.position.y) * 0.06;
+  masterGroup.position.z += (targetZ - masterGroup.position.z) * 0.06;
+
+  const currentScale = masterGroup.scale.x;
+  const newScale = currentScale + (targetScale - currentScale) * 0.06;
+  masterGroup.scale.set(newScale, newScale, newScale);
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_4 -->
+</div>
+<!-- TOP NAVIGATION -->
+<header class="fixed top-0 left-0 right-0 z-50 px-8 py-7 md:px-14 flex items-center justify-between backdrop-blur-md bg-[#08080a]/40 border-b border-[#23232b]/40">
+<!-- Brand Mark -->
+<a class="group flex flex-col" href="#hero">
+<div class="flex items-center gap-2.5">
+<span class="font-display font-extrabold text-xl md:text-2xl tracking-tighter text-noir-light group-hover:text-noir-accent transition-colors duration-300">NOIR</span>
+<span class="w-1.5 h-1.5 rounded-full bg-noir-accent/80"></span>
+</div>
+<span class="font-mono text-[9px] tracking-widest uppercase text-noir-muted">Digital Creative Studio</span>
+</a>
+<!-- Center Availability Indicator -->
+<div class="hidden lg:flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-noir-border/50 bg-[#0d0d12]/60 backdrop-blur-sm">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+</span>
+<span class="font-mono text-[10px] tracking-widest2 text-noir-muted uppercase">Available for Select Projects</span>
+</div>
+<!-- Navigation Links -->
+<nav class="flex items-center gap-8 md:gap-11">
+<a class="font-mono text-xs tracking-widest2 text-noir-muted hover:text-noir-light transition-colors uppercase" href="#manifesto">Manifesto</a>
+<a class="font-mono text-xs tracking-widest2 text-noir-muted hover:text-noir-light transition-colors uppercase" href="#work">Work</a>
+<a class="font-mono text-xs tracking-widest2 text-noir-muted hover:text-noir-light transition-colors uppercase" href="#services">Services</a>
+<a class="font-mono text-xs tracking-widest2 text-noir-muted hover:text-noir-light transition-colors uppercase" href="#about">About</a>
+<a class="px-3.5 py-1.5 rounded border border-noir-border hover:border-noir-accent/60 font-mono text-xs tracking-widest2 text-noir-light hover:text-noir-accent transition-all uppercase" href="#contact">Contact</a>
+</nav>
+</header>
+<!-- MAIN EDITORIAL CONTENT STREAM -->
+<main class="relative z-20 w-full">
+<!-- ============================================== -->
+<!-- SECTION 01: HERO                               -->
+<!-- ============================================== -->
+<section class="relative min-h-screen flex flex-col justify-between px-8 md:px-14 pt-36 pb-12" id="hero">
+<!-- Top Meta Coordinate -->
+<div class="flex items-start justify-between w-full">
+<div class="space-y-1">
+<div class="font-mono text-[11px] tracking-widest3 text-noir-accent uppercase font-medium">Digital Creative Studio</div>
+<div class="font-mono text-xs text-noir-muted">/ 01 — IDENTITY</div>
+</div>
+<div class="hidden sm:block text-right font-mono text-[11px] tracking-widest text-noir-muted">
+          LOC. [48.8566° N, 2.3522° E]<br/>
+<span class="text-noir-light">SYS. 3D_CORE_ACTIVE</span>
+</div>
+</div>
+<!-- Hero Statement Composition -->
+<div class="max-w-2xl my-auto py-12 pointer-events-auto">
+<h1 class="font-display font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.92] tracking-tightest text-noir-light">
+          WE CREATE<br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-noir-light via-neutral-300 to-neutral-500">DIGITAL EXPERIENCES</span><br/>
+          THAT MOVE.
+        </h1>
+<div class="mt-8 flex flex-wrap items-center gap-4 text-xs font-mono tracking-widest2 text-noir-muted uppercase border-t border-noir-border/60 pt-6">
+<span>DESIGN</span>
+<span class="text-noir-border">•</span>
+<span>DEVELOPMENT</span>
+<span class="text-noir-border">•</span>
+<span>3D WEBGL</span>
+<span class="text-noir-border">•</span>
+<span>MOTION</span>
+</div>
+</div>
+<!-- Bottom Nav & Scroll Indicator -->
+<div class="flex items-end justify-between w-full pt-6 border-t border-noir-border/30">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-noir-accent"></span>
+<span class="font-mono text-xs tracking-widest uppercase text-noir-muted">ONE OBJECT. ONE EXPERIENCE.</span>
+</div>
+<a class="group flex items-center gap-3 font-mono text-xs tracking-widest2 text-noir-muted hover:text-noir-light uppercase transition-colors" href="#manifesto">
+<span>SCROLL</span>
+<span class="text-noir-accent font-semibold">01 — 06</span>
+<svg class="w-4 h-4 transform group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</a>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 02: MANIFESTO                          -->
+<!-- ============================================== -->
+<section class="relative min-h-screen flex flex-col justify-center px-8 md:px-14 py-28 border-t border-noir-border/40" id="manifesto">
+<div class="max-w-6xl mx-auto w-full">
+<!-- Section Index Tag -->
+<div class="flex items-center justify-between mb-16 border-b border-noir-border/40 pb-4">
+<span class="font-mono text-xs tracking-widest3 text-noir-accent uppercase font-medium">02 / MANIFESTO</span>
+<div class="flex gap-6 font-mono text-[11px] tracking-widest text-noir-muted uppercase">
+<span>DESIGN</span>
+<span>TECHNOLOGY</span>
+<span>MOTION</span>
+</div>
+</div>
+<!-- Dramatic Manifesto Typography -->
+<div class="space-y-6">
+<p class="font-mono text-sm tracking-widest2 uppercase text-noir-muted">Axiom 01</p>
+<blockquote class="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-[84px] leading-[0.96] tracking-tightest text-noir-light">
+            WE DON'T DESIGN<br/>
+<span class="text-neutral-500 hover:text-noir-light transition-colors duration-500">FOR SCREENS.</span><br/>
+            WE DESIGN<br/>
+            FOR EXPERIENCES.
+          </blockquote>
+</div>
+<!-- Spatial Column Narrative -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20 pt-10 border-t border-noir-border/40">
+<div class="space-y-3">
+<span class="font-mono text-xs text-noir-accent tracking-widest">[ 01 ] ARCHITECTURAL PRECISION</span>
+<p class="text-sm leading-relaxed text-noir-muted">
+              We reject arbitrary decoration and fleeting templates. Every pixel, transition, and vertex is disciplined by functional purpose and spatial rhythm.
+            </p>
+</div>
+<div class="space-y-3">
+<span class="font-mono text-xs text-noir-accent tracking-widest">[ 02 ] REACTIVE GEOMETRY</span>
+<p class="text-sm leading-relaxed text-noir-muted">
+              Through bespoke WebGL shader pipelines and procedural physics, our digital environments react organically to user intent without friction.
+            </p>
+</div>
+<div class="space-y-3">
+<span class="font-mono text-xs text-noir-accent tracking-widest">[ 03 ] CINEMATIC INTENT</span>
+<p class="text-sm leading-relaxed text-noir-muted">
+              We orchestrate light, composition, and typography as a single cohesive narrative medium. An interface that lingers long after departure.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 03: SELECTED WORK                      -->
+<!-- ============================================== -->
+<section class="relative min-h-screen px-8 md:px-14 py-28 border-t border-noir-border/40" id="work">
+<div class="max-w-6xl mx-auto w-full">
+<!-- Section Header -->
+<div class="flex items-end justify-between mb-20 border-b border-noir-border/50 pb-6">
+<div>
+<div class="font-mono text-xs tracking-widest3 text-noir-accent uppercase font-medium">03 / CASE ARCHIVE</div>
+<h2 class="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-noir-light tracking-tightest mt-2">SELECTED WORK</h2>
+</div>
+<span class="font-mono text-xs tracking-widest uppercase text-noir-muted hidden sm:inline-block">2024 — 2026 INDEX</span>
+</div>
+<!-- Editorial Case Studies List -->
+<div class="divide-y divide-noir-border/40">
+<!-- Project 01 -->
+<article class="group relative py-12 md:py-16 transition-all duration-300">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+<div class="space-y-2">
+<div class="flex items-center gap-4">
+<span class="font-mono text-xs text-noir-accent tracking-widest">PROJ / 01</span>
+<span class="font-mono text-xs text-noir-muted tracking-wider uppercase">AI / WEBGL / DATA</span>
+</div>
+<h3 class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-noir-light group-hover:text-noir-accent transition-colors duration-300 tracking-tightest">
+                  NEXUS
+                </h3>
+<p class="font-mono text-sm tracking-wider uppercase text-noir-muted">ON-CHAIN INTELLIGENCE</p>
+</div>
+<div class="flex items-center gap-12 text-right">
+<div class="hidden md:block text-right">
+<span class="font-mono text-xs text-noir-muted uppercase block">YEAR</span>
+<span class="font-mono text-sm text-noir-light">2026</span>
+</div>
+<div class="hidden md:block text-right">
+<span class="font-mono text-xs text-noir-muted uppercase block">RECOGNITION</span>
+<span class="font-mono text-sm text-noir-light">FWA / AWWWARDS SOTD</span>
+</div>
+<a class="w-12 h-12 rounded-full border border-noir-border group-hover:border-noir-accent group-hover:bg-noir-accent group-hover:text-noir-bg flex items-center justify-center transition-all duration-300" href="#contact">
+<svg class="w-5 h-5 transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</a>
+</div>
+</div>
+</article>
+<!-- Project 02 -->
+<article class="group relative py-12 md:py-16 transition-all duration-300">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+<div class="space-y-2">
+<div class="flex items-center gap-4">
+<span class="font-mono text-xs text-noir-accent tracking-widest">PROJ / 02</span>
+<span class="font-mono text-xs text-noir-muted tracking-wider uppercase">AI / PRODUCT / UX</span>
+</div>
+<h3 class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-noir-light group-hover:text-noir-accent transition-colors duration-300 tracking-tightest">
+                  STRIV
+                </h3>
+<p class="font-mono text-sm tracking-wider uppercase text-noir-muted">FITNESS INTELLIGENCE PLATFORM</p>
+</div>
+<div class="flex items-center gap-12 text-right">
+<div class="hidden md:block text-right">
+<span class="font-mono text-xs text-noir-muted uppercase block">YEAR</span>
+<span class="font-mono text-sm text-noir-light">2026</span>
+</div>
+<div class="hidden md:block text-right">
+<span class="font-mono text-xs text-noir-muted uppercase block">RECOGNITION</span>
+<span class="font-mono text-sm text-noir-light">RED DOT BEST OF THE BEST</span>
+</div>
+<a class="w-12 h-12 rounded-full border border-noir-border group-hover:border-noir-accent group-hover:bg-noir-accent group-hover:text-noir-bg flex items-center justify-center transition-all duration-300" href="#contact">
+<svg class="w-5 h-5 transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</a>
+</div>
+</div>
+</article>
+<!-- Project 03 -->
+<article class="group relative py-12 md:py-16 transition-all duration-300">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+<div class="space-y-2">
+<div class="flex items-center gap-4">
+<span class="font-mono text-xs text-noir-accent tracking-widest">PROJ / 03</span>
+<span class="font-mono text-xs text-noir-muted tracking-wider uppercase">BRAND / INTERACTION</span>
+</div>
+<h3 class="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-noir-light group-hover:text-noir-accent transition-colors duration-300 tracking-tightest">
+                  NOIR ARCHIVE
+                </h3>
+<p class="font-mono text-sm tracking-wider uppercase text-noir-muted">DIGITAL IDENTITY &amp; SPATIAL INSTALLATION</p>
+</div>
+<div class="flex items-center gap-12 text-right">
+<div class="hidden md:block text-right">
+<span class="font-mono text-xs text-noir-muted uppercase block">YEAR</span>
+<span class="font-mono text-sm text-noir-light">2026</span>
+</div>
+<div class="hidden md:block text-right">
+<span class="font-mono text-xs text-noir-muted uppercase block">RECOGNITION</span>
+<span class="font-mono text-sm text-noir-light">CSS DESIGN AWARDS</span>
+</div>
+<a class="w-12 h-12 rounded-full border border-noir-border group-hover:border-noir-accent group-hover:bg-noir-accent group-hover:text-noir-bg flex items-center justify-center transition-all duration-300" href="#contact">
+<svg class="w-5 h-5 transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</a>
+</div>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 04: SERVICES                           -->
+<!-- ============================================== -->
+<section class="relative min-h-screen px-8 md:px-14 py-28 border-t border-noir-border/40" id="services">
+<div class="max-w-6xl mx-auto w-full">
+<!-- Section Header -->
+<div class="flex items-end justify-between mb-20 border-b border-noir-border/50 pb-6">
+<div>
+<div class="font-mono text-xs tracking-widest3 text-noir-accent uppercase font-medium">04 / CAPABILITIES</div>
+<h2 class="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-noir-light tracking-tightest mt-2">WHAT WE DO</h2>
+</div>
+<span class="font-mono text-xs tracking-widest uppercase text-noir-muted hidden sm:inline-block">FULL-SPECTRUM CRAFT</span>
+</div>
+<!-- Vertical Editorial Service Matrix -->
+<div class="divide-y divide-noir-border/40">
+<div class="group py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 hover:pl-3">
+<div class="flex items-baseline gap-8">
+<span class="font-mono text-sm text-noir-accent">01</span>
+<h3 class="font-display font-bold text-2xl md:text-3xl text-noir-light group-hover:text-white transition-colors">DIGITAL PRODUCTS</h3>
+</div>
+<p class="font-mono text-xs tracking-wider uppercase text-noir-muted md:text-right max-w-xs">
+              Complex interfaces engineered with intuitive ergonomics and human psychology.
+            </p>
+</div>
+<div class="group py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 hover:pl-3">
+<div class="flex items-baseline gap-8">
+<span class="font-mono text-sm text-noir-accent">02</span>
+<h3 class="font-display font-bold text-2xl md:text-3xl text-noir-light group-hover:text-white transition-colors">INTERACTIVE WEB</h3>
+</div>
+<p class="font-mono text-xs tracking-wider uppercase text-noir-muted md:text-right max-w-xs">
+              Fluid, cinematic web journeys powered by bespoke micro-interactions.
+            </p>
+</div>
+<div class="group py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 hover:pl-3">
+<div class="flex items-baseline gap-8">
+<span class="font-mono text-sm text-noir-accent">03</span>
+<h3 class="font-display font-bold text-2xl md:text-3xl text-noir-light group-hover:text-white transition-colors">3D / WEBGL</h3>
+</div>
+<p class="font-mono text-xs tracking-wider uppercase text-noir-muted md:text-right max-w-xs">
+              IMMERSIVE DIGITAL ENVIRONMENTS &amp; PROCEDURAL SHADER SCULPTURES.
+            </p>
+</div>
+<div class="group py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 hover:pl-3">
+<div class="flex items-baseline gap-8">
+<span class="font-mono text-sm text-noir-accent">04</span>
+<h3 class="font-display font-bold text-2xl md:text-3xl text-noir-light group-hover:text-white transition-colors">CREATIVE DEVELOPMENT</h3>
+</div>
+<p class="font-mono text-xs tracking-wider uppercase text-noir-muted md:text-right max-w-xs">
+              Pixel-perfect frontend architecture, custom shaders, and 60fps physics.
+            </p>
+</div>
+<div class="group py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 hover:pl-3">
+<div class="flex items-baseline gap-8">
+<span class="font-mono text-sm text-noir-accent">05</span>
+<h3 class="font-display font-bold text-2xl md:text-3xl text-noir-light group-hover:text-white transition-colors">VISUAL IDENTITY</h3>
+</div>
+<p class="font-mono text-xs tracking-wider uppercase text-noir-muted md:text-right max-w-xs">
+              Dynamic design systems tailored for next-generation technology pioneers.
+            </p>
+</div>
+<div class="group py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 hover:pl-3">
+<div class="flex items-baseline gap-8">
+<span class="font-mono text-sm text-noir-accent">06</span>
+<h3 class="font-display font-bold text-2xl md:text-3xl text-noir-light group-hover:text-white transition-colors">MOTION &amp; EXPERIENCE</h3>
+</div>
+<p class="font-mono text-xs tracking-wider uppercase text-noir-muted md:text-right max-w-xs">
+              Calculated kinetic rhythms that guide attention with deliberate intent.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 05: ABOUT                              -->
+<!-- ============================================== -->
+<section class="relative min-h-screen flex flex-col justify-center px-8 md:px-14 py-28 border-t border-noir-border/40" id="about">
+<div class="max-w-6xl mx-auto w-full">
+<!-- Section Header -->
+<div class="flex items-center justify-between mb-16 border-b border-noir-border/40 pb-4">
+<span class="font-mono text-xs tracking-widest3 text-noir-accent uppercase font-medium">05 / STUDIO ORIGIN</span>
+<span class="font-mono text-[11px] tracking-widest text-noir-muted uppercase">PARIS — TOKYO — GLOBAL</span>
+</div>
+<!-- Studio Statement -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<div class="lg:col-span-8">
+<h2 class="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-noir-light leading-[1.05] tracking-tightest">
+              WE BUILD AT THE INTERSECTION OF DESIGN, TECHNOLOGY AND MOTION.
+            </h2>
+<p class="mt-8 text-base md:text-lg text-noir-muted leading-relaxed max-w-2xl font-normal">
+              NOIR IS AN INDEPENDENT DIGITAL STUDIO FOCUSED ON BUILDING DISTINCTIVE DIGITAL EXPERIENCES FOR PEOPLE, PRODUCTS, AND CULTURAL BRANDS. WE OPERATE AS A COMPACT CELL OF SENIOR ARTISTS, CREATIVE DIRECTORS, AND COMPUTATIONAL ENGINEERS.
+            </p>
+</div>
+<!-- Studio Metrics & Philosophy -->
+<div class="lg:col-span-4 space-y-8 pt-2">
+<div class="p-6 rounded border border-noir-border/50 bg-[#0d0d12]/40 backdrop-blur-sm space-y-2">
+<span class="font-mono text-xs text-noir-accent tracking-widest uppercase">DISCIPLINE</span>
+<p class="text-xs leading-relaxed text-noir-muted font-mono">
+                ZERO COMPROMISE ON LATENCY, FRAME-TIMINGS, AND TYPOGRAPHIC HIERARCHY.
+              </p>
+</div>
+<div class="p-6 rounded border border-noir-border/50 bg-[#0d0d12]/40 backdrop-blur-sm space-y-2">
+<span class="font-mono text-xs text-noir-accent tracking-widest uppercase">GLOBAL COLLABORATION</span>
+<p class="text-xs leading-relaxed text-noir-muted font-mono">
+                SELECTED COMMISSIONS ONLY. 4 CONCURRENT ENGAGEMENTS PER ANNUM.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 06: CONTACT / FINALE                   -->
+<!-- ============================================== -->
+<section class="relative min-h-screen flex flex-col justify-between px-8 md:px-14 pt-28 pb-12 border-t border-noir-border/40" id="contact">
+<!-- Section Tag -->
+<div class="max-w-6xl mx-auto w-full flex items-center justify-between border-b border-noir-border/40 pb-4">
+<span class="font-mono text-xs tracking-widest3 text-noir-accent uppercase font-medium">06 / INITIATE</span>
+<span class="font-mono text-xs tracking-widest text-noir-muted uppercase">STATUS: ACCEPTING Q3/Q4 COMMISSIONS</span>
+</div>
+<!-- Main Headline & Grand Call To Action -->
+<div class="max-w-5xl mx-auto w-full my-auto py-16">
+<h2 class="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-noir-light tracking-tightest leading-[0.95]">
+          HAVE A PROJECT<br/>
+          IN MIND?<br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-noir-light via-neutral-400 to-neutral-600">LET'S BUILD</span><br/>
+          SOMETHING IMPOSSIBLE.
+        </h2>
+<div class="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-8">
+<a class="group px-8 py-4 rounded bg-noir-light text-noir-bg font-mono text-xs tracking-widest2 uppercase font-semibold flex items-center gap-3 hover:bg-noir-accent hover:text-noir-bg transition-all duration-300" href="mailto:hello@noir.studio">
+<span>START A PROJECT</span>
+<span class="transform group-hover:translate-x-1 transition-transform">↗</span>
+</a>
+<a class="font-mono text-sm tracking-wider text-noir-muted hover:text-noir-light transition-colors" href="mailto:hello@noir.studio">
+            HELLO@NOIR.STUDIO
+          </a>
+</div>
+</div>
+<!-- Social and Network Coordinates -->
+<div class="max-w-6xl mx-auto w-full pt-8 border-t border-noir-border/40 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-8 font-mono text-xs tracking-widest uppercase text-noir-muted">
+<a class="hover:text-noir-accent transition-colors" href="https://instagram.com" target="_blank">INSTAGRAM</a>
+<a class="hover:text-noir-accent transition-colors" href="https://behance.net" target="_blank">BEHANCE</a>
+<a class="hover:text-noir-accent transition-colors" href="https://linkedin.com" target="_blank">LINKEDIN</a>
+<a class="hover:text-noir-accent transition-colors" href="https://x.com" target="_blank">X / TWITTER</a>
+</div>
+<div class="font-mono text-xs text-noir-muted">
+          TIMEZONE: CET [GMT+1]
+        </div>
+</div>
+</section>
+</main>
+<!-- ============================================== -->
+<!-- FOOTER                                         -->
+<!-- ============================================== -->
+<footer class="relative z-20 px-8 md:px-14 py-8 border-t border-noir-border/30 bg-[#08080a] flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="font-display font-extrabold text-sm text-noir-light">NOIR</span>
+<span class="text-noir-border">•</span>
+<span class="font-mono text-[11px] tracking-widest text-noir-muted uppercase">DIGITAL CREATIVE STUDIO 2026</span>
+</div>
+<div class="font-mono text-[10px] tracking-widest2 text-noir-muted uppercase">
+      DESIGN × DEVELOPMENT × EXPERIENCE
+    </div>
+<div class="font-mono text-[10px] text-neutral-600">
+      ALL RIGHTS RESERVED © 2026
+    </div>
+</footer>
+</body>
+</html>
