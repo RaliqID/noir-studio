@@ -2,3 +2,7 @@ node_modules
 dist
 *.local
 .DS_Store
+
+# TypeScript incremental build cache. These are machine-generated artifacts
+# that churn on every `tsc -b` and produce meaningless diffs in review.
+*.tsbuildinfo
